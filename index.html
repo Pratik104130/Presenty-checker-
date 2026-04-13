@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Login</title>
+
+<style>
+body{
+margin:0;
+font-family:-apple-system;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+overflow:hidden;
+}
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+z-index:-1;
+}
+
+.container{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.card{
+background:rgba(255,255,255,0.05);
+backdrop-filter:blur(20px);
+padding:30px;
+border-radius:20px;
+text-align:center;
+width:300px;
+}
+
+.roles{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-bottom:15px;
+}
+
+.roleBtn{
+padding:10px 20px;
+border-radius:20px;
+cursor:pointer;
+background:#1e293b;
+}
+
+.activeRole{
+background:#22c55e;
+}
+
+input{
+padding:10px;
+margin:8px;
+width:90%;
+border-radius:8px;
+border:none;
+background:#111;
+color:white;
+}
+
+button{
+padding:10px;
+background:#22c55e;
+color:white;
+border:none;
+border-radius:10px;
+cursor:pointer;
+width:100%;
+}
+
+.hidden{display:none;}
+p{
+  font-size: 5px;
+  font-weight: 700;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<div class="container">
+<div class="card">
+
+<h2>🔐 Smart Login</h2>
+
+<div class="roles">
+<div id="teacherBtn" class="roleBtn activeRole" onclick="setRole('teacher')">👨‍🏫</div>
+<div id="studentBtn" class="roleBtn" onclick="setRole('student')">👨‍🎓</div>
+</div>
+
+<div id="studentFields">
+<input id="roll" placeholder="Roll No">
+<input id="name" placeholder="Full Name">
+</div>
+
+<input id="teacherPin" placeholder="Teacher Code" class="hidden">
+
+<button onclick="login()">Login</button>
+
+<p>Made By Pratik</p>
+
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+   apiKey: "AIzaSyDhYc_ieCicFMd1IQm6hMrvpUUx5G8ENUk",
+   
+   databaseURL: "https://presenty-pro-default-rtdb.firebaseio.com/"
+});
+
+const db = getDatabase(app);
+
+// ROLE
+let currentRole = "teacher";
+
+window.setRole = function(role){
+ currentRole = role;
+
+ document.getElementById("teacherBtn").classList.toggle("activeRole", role==="teacher");
+ document.getElementById("studentBtn").classList.toggle("activeRole", role==="student");
+
+ document.getElementById("studentFields").classList.toggle("hidden", role==="teacher");
+ document.getElementById("teacherPin").classList.toggle("hidden", role==="student");
+}
+
+// AUTO LOGIN
+if(localStorage.getItem("role")==="teacher") location="teacher.html";
+if(localStorage.getItem("role")==="student") location="student.html";
+
+// LOGIN FIXED
+window.login = async function(){
+
+ let roll = document.getElementById("roll").value.trim();
+ let name = document.getElementById("name").value.trim();
+ let pin = document.getElementById("teacherPin").value.trim();
+
+ if(currentRole === "teacher"){
+
+   if(pin === "9999"){
+     localStorage.setItem("role","teacher");
+     location="teacher.html";
+   } else {
+     alert("Wrong teacher code");
+   }
+   return;
+ }
+
+ if(!roll || !name){
+   alert("Enter roll and name");
+   return;
+ }
+
+ let snap = await get(ref(db,"students"));
+ let data = snap.val() || {};
+
+ for(let id in data){
+   let s = data[id];
+
+   if(s.roll == roll && s.name.toLowerCase() === name.toLowerCase()){
+     localStorage.setItem("role","student");
+     localStorage.setItem("userId",id);
+     location="student.html";
+     return;
+   }
+ }
+
+ alert("Invalid login");
+}
+
+// particles (same as yours)
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = innerWidth;
+canvas.height = innerHeight;
+
+let particles=[];
+
+for(let i=0;i<60;i++){
+ particles.push({
+   x:Math.random()*canvas.width,
+   y:Math.random()*canvas.height,
+   r:Math.random()*2,
+   dx:(Math.random()-0.5),
+   dy:(Math.random()-0.5)
+ });
+}
+
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ particles.forEach(p=>{
+   ctx.beginPath();
+   ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+   ctx.fillStyle="white";
+   ctx.fill();
+
+   p.x+=p.dx;
+   p.y+=p.dy;
+ });
+
+ requestAnimationFrame(draw);
+}
+draw();
+
+</script>
+
+</body>
+</html>

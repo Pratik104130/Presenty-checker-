@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Student Dashboard</title>
+
+<style>
+body{
+font-family:-apple-system;
+background:linear-gradient(135deg,#020617,#0f172a);
+color:white;
+margin:0;
+}
+
+/* HEADER */
+header{
+padding:15px;
+display:flex;
+justify-content:space-between;
+background:rgba(0,0,0,0.6);
+}
+
+/* CARD */
+.card{
+background:rgba(255,20,147,0.1);
+margin:15px;
+padding:20px;
+border-radius:20px;
+box-shadow:0 0 20px rgba(255,20,147,0.3);
+}
+
+/* TODAY STATUS */
+#today{
+font-size:20px;
+text-align:center;
+padding:10px;
+border-radius:12px;
+}
+
+/* CALENDAR */
+.calendar{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:8px;
+}
+
+.day{
+padding:10px;
+text-align:center;
+border-radius:10px;
+background:#1e293b;
+font-size:12px;
+transition:0.3s;
+}
+
+.day:hover{
+transform:scale(1.1);
+}
+
+.present{background:#22c55e;}
+.absent{background:#ff2d75;}
+.today{border:2px solid #ff2d75;}
+
+/* GRAPH */
+.bar{
+height:20px;
+background:linear-gradient(90deg,#ff2d75,#ff69b4);
+border-radius:10px;
+margin-top:10px;
+transition:1s;
+}
+
+/* MINI CHART */
+.chart{
+display:flex;
+gap:5px;
+margin-top:10px;
+}
+
+.barMini{
+width:20px;
+height:50px;
+background:#ff2d75;
+border-radius:5px;
+}
+
+/* BUTTON */
+button{
+background:#ff2d75;
+color:white;
+border:none;
+padding:6px 12px;
+border-radius:8px;
+cursor:pointer;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>👨‍🎓 My Dashboard</h2>
+<button onclick="logout()">Logout</button>
+</header>
+
+<!-- TODAY -->
+<div class="card">
+<h3>🌸 Today Status</h3>
+<div id="today"></div>
+</div>
+
+<!-- STATS -->
+<div class="card">
+<h3>📊 Attendance</h3>
+<div id="stats"></div>
+<div id="graph"></div>
+
+<!-- MINI CHART -->
+<div class="chart" id="miniChart"></div>
+</div>
+
+<!-- CALENDAR -->
+<div class="card">
+<h3>📆 Calendar</h3>
+<div class="calendar" id="calendar"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const app = initializeApp({
+  apiKey: "AIzaSyDhYc_ieCicFMd1IQm6hMrvpUUx5G8ENUk",
+  databaseURL:"https://presenty-pro-default-rtdb.firebaseio.com/"
+});
+const db = getDatabase(app);
+
+// 🔐 PROTECT
+if(localStorage.getItem("role")!=="student"){
+ location="index.html";
+}
+
+let userId = localStorage.getItem("userId");
+
+// LOGOUT
+window.logout=()=>{
+ localStorage.clear();
+ location="index.html";
+}
+
+// LOAD
+async function load(){
+
+ let snap = await get(ref(db,"attendance"));
+ let data = snap.val() || {};
+
+ let present=0,total=0;
+ let calendarHTML="";
+ let miniChartHTML="";
+
+ let todayKey = new Date().toISOString().split("T")[0];
+ let todayStatus="❌ Absent";
+
+ let last7=[];
+
+ for(let date in data){
+
+   let dayData = data[date] || {};
+   let status = dayData[userId] || "absent";
+
+   total++;
+
+   if(status==="present") present++;
+
+   if(date===todayKey){
+     todayStatus = status==="present" ? "✅ Present 🎉" : "❌ Absent 😢";
+   }
+
+   let className="day";
+   if(status==="present") className+=" present";
+   else className+=" absent";
+
+   if(date===todayKey) className+=" today";
+
+   let d = new Date(date).getDate();
+
+   calendarHTML += `<div class="${className}">${d}</div>`;
+
+   // last 7 days
+   last7.push(status==="present"?1:0);
+   if(last7.length>7) last7.shift();
+ }
+
+ let percent = total ? Math.round((present/total)*100) : 0;
+
+ // TODAY
+ document.getElementById("today").innerHTML = todayStatus;
+
+ // STATS
+ document.getElementById("stats").innerHTML = `
+ <h2>${percent}%</h2>
+ <p>${present}/${total} days</p>
+ `;
+
+ // MAIN GRAPH
+ document.getElementById("graph").innerHTML =
+ `<div class="bar" style="width:${percent}%"></div>`;
+
+ // MINI GRAPH
+ last7.forEach(v=>{
+   miniChartHTML += `<div class="barMini" style="height:${v?50:20}px"></div>`;
+ });
+
+ document.getElementById("miniChart").innerHTML = miniChartHTML;
+
+ // CALENDAR
+ document.getElementById("calendar").innerHTML = calendarHTML;
+}
+
+load();
+
+</script>
+
+</body>
+</html>
