@@ -1,158 +1,228 @@
-<!DOCTYPE html>  <html>  
-<head>  
-<title>Teacher Dashboard PRO</title>  <style>  
-body{  
-margin:0;  
-font-family:-apple-system, BlinkMacSystemFont;  
-background:linear-gradient(135deg,#0f172a,#020617);  
-color:white;  
-}  
-  
-/* HEADER */  
-header{  
-padding:15px 20px;  
-display:flex;  
-justify-content:space-between;  
-align-items:center;  
-background:rgba(255,255,255,0.05);  
-backdrop-filter:blur(10px);  
-}  
-  
-h2{margin:0;font-weight:500;}  
-  
-.logout{  
-background:#ef4444;  
-color:white;  
-padding:8px 14px;  
-border:none;  
-border-radius:10px;  
-cursor:pointer;  
-}  
-  
-/* DATE */  
-#dateBox{  
-display:flex;  
-justify-content:center;  
-gap:10px;  
-margin:15px;  
-}  
-  
-.dateBtn{  
-background:rgba(255,255,255,0.08);  
-padding:10px 15px;  
-border-radius:12px;  
-cursor:pointer;  
-transition:0.2s;  
-}  
-  
-.dateBtn:hover{  
-background:rgba(255,255,255,0.15);  
-}  
-  
-/* CARD */  
-.card{  
-background:rgba(255,255,255,0.05);  
-backdrop-filter:blur(15px);  
-margin:15px;  
-padding:20px;  
-border-radius:20px;  
-box-shadow:0 10px 30px rgba(0,0,0,0.5);  
-}  
-  
-/* INPUT */  
-input{  
-padding:10px;  
-margin:5px;  
-border-radius:10px;  
-border:none;  
-background:#020617;  
-color:white;  
-}  
-  
-/* BUTTON */  
-button{  
-padding:6px 12px;  
-border:none;  
-border-radius:10px;  
-cursor:pointer;  
-margin:2px;  
-transition:0.2s;  
-}  
-  
-.add{background:#6366f1;color:white;}  
-.present{background:#22c55e;}  
-.absent{background:#ef4444;}  
-.edit{background:#3b82f6;}  
-.delete{background:#dc2626;}  
-.all{background:#06b6d4;}  
-  
-/* STUDENT */  
-.student{  
-display:flex;  
-justify-content:space-between;  
-align-items:center;  
-padding:12px;  
-margin:10px 0;  
-background:rgba(255,255,255,0.05);  
-border-radius:12px;  
-transition:0.2s;  
-}  
-  
-.student:hover{  
-background:rgba(255,255,255,0.1);  
-}  
-  
-/* STATS */  
-.progress{  
-height:10px;  
-background:#111;  
-border-radius:10px;  
-overflow:hidden;  
-margin-top:10px;  
-}  
-  
-.progress div{  
-height:100%;  
-background:linear-gradient(90deg,#6366f1,#06b6d4);  
-}  
-  
-/* TOAST */  
-#toast{  
-position:fixed;  
-bottom:20px;  
-right:20px;  
-background:#6366f1;  
-padding:10px 20px;  
-border-radius:10px;  
-display:none;  
-}  
-</style>  </head>  <body>  <header>  
-<h2>👨‍🏫 Teacher Dashboard</h2>  
-<button class="logout" onclick="logout()">Logout</button>  
-</header>  <!-- DATE -->  <div id="dateBox">  
-<div class="dateBtn" onclick="changeDate(-1)">⬅️</div>  
-<div class="dateBtn" id="dateText"></div>  
-<div class="dateBtn" onclick="changeDate(1)">➡️</div>  
-</div>  <!-- ADD -->  <div class="card">  
-<h3>Add Student</h3>  
-<input id="name" placeholder="Name">  
-<input id="roll" placeholder="Roll No">  
-<button class="add" onclick="addStudent()">Add</button>  
-</div>  <!-- SEARCH -->  <div class="card">  
-<h3>Search</h3>  
-<input id="search" placeholder="Search..." oninput="loadUI()">  
-</div>  <!-- ACTIONS -->  <div class="card">  
-<h3>Quick Actions</h3>  
-<button class="all" onclick="markAll('present')">All Present</button>  
-<button class="all" onclick="markAll('absent')">All Absent</button>  
-</div>  <!-- STATS -->  <div class="card">  
-<h3>Stats</h3>  
-<div id="stats"></div>  
-<div class="progress"><div id="progressBar"></div></div>  
-</div>  <!-- LIST -->  <div class="card">  
-<h3>Students</h3>  
-<div id="list"></div>  
-</div>  <div id="toast"></div>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Teacher PRO SKY</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body{
+margin:0;
+font-family:-apple-system, BlinkMacSystemFont;
+background:radial-gradient(circle at top,#0b1220,#000);
+color:#e2e8f0;
+}
+
+/* HEADER */
+header{
+padding:15px 20px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(12px);
+border-bottom:1px solid rgba(56,189,248,0.2);
+}
+
+h2{
+margin:0;
+font-size: 20px;
+font-weight:600;
+}
+
+.logout{
+background:#ef4444;
+color:white;
+padding:8px 14px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* DATE */
+#dateBox{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:15px;
+}
+
+.dateBtn{
+background:rgba(56,189,248,0.08);
+padding:10px 15px;
+border-radius:12px;
+cursor:pointer;
+transition:0.3s;
+border:1px solid rgba(56,189,248,0.2);
+}
+
+.dateBtn:hover{
+background:rgba(56,189,248,0.2);
+transform:scale(1.05);
+}
+
+/* CARD */
+.card{
+background:rgba(255,255,255,0.04);
+backdrop-filter:blur(16px);
+margin:15px;
+padding:18px;
+border-radius:18px;
+border:1px solid rgba(56,189,248,0.15);
+box-shadow:0 0 25px rgba(0,0,0,0.6);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-2px);
+border-color:rgba(239,68,68,0.4);
+}
+
+/* INPUT */
+input{
+padding:10px;
+margin:5px;
+border-radius:10px;
+border:1px solid rgba(56,189,248,0.2);
+background:#0a0f1c;
+color:white;
+width:calc(100% - 20px);
+outline:none;
+}
+
+input:focus{
+border-color:#38bdf8;
+box-shadow:0 0 10px rgba(56,189,248,0.3);
+}
+
+/* BUTTON */
+button{
+padding:8px 12px;
+border:none;
+border-radius:10px;
+cursor:pointer;
+margin:2px;
+transition:0.2s;
+font-weight:600;
+}
+
+button:hover{
+transform:scale(1.05);
+}
+
+/* COLORS */
+.add{background:#38bdf8;color:#000;}
+.present{background:#22c55e;color:#000;}
+.absent{background:#ef4444;color:white;}
+.edit{background:#60a5fa;color:#000;}
+.delete{background:#fb7185;color:#000;}
+.all{background:#0ea5e9;color:#000;}
+
+/* STUDENT */
+.student{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px;
+margin:10px 0;
+background:rgba(255,255,255,0.03);
+border-radius:12px;
+border:1px solid rgba(56,189,248,0.1);
+transition:0.3s;
+}
+
+.student:hover{
+background:rgba(56,189,248,0.08);
+}
+
+/* STATS */
+#stats{
+font-size:18px;
+margin-bottom:8px;
+color:#38bdf8;
+}
+
+.progress{
+height:10px;
+background:#0a0f1c;
+border-radius:10px;
+overflow:hidden;
+border:1px solid rgba(56,189,248,0.2);
+}
+
+.progress div{
+height:100%;
+background:linear-gradient(90deg,#38bdf8,#ef4444);
+}
+
+/* TOAST */
+#toast{
+position:fixed;
+bottom:20px;
+right:20px;
+background:#38bdf8;
+color:#000;
+padding:10px 18px;
+border-radius:10px;
+display:none;
+font-weight:600;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+.student{
+flex-direction:column;
+align-items:flex-start;
+gap:8px;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h2>👨‍🏫 Teacher Dashboard</h2>
+<button class="logout" onclick="logout()">Logout</button>
+</header>
+
+<div id="dateBox">
+<div class="dateBtn" onclick="changeDate(-1)">⬅️</div>
+<div class="dateBtn" id="dateText"></div>
+<div class="dateBtn" onclick="changeDate(1)">➡️</div>
+</div>
+
+<div class="card">
+<h3>➕ Add Student</h3>
+<input id="name" placeholder="Name">
+<input id="roll" placeholder="Roll No">
+<button class="add" onclick="addStudent()">Add Student</button>
+</div>
+
+<div class="card">
+<h3>🔍 Search</h3>
+<input id="search" placeholder="Search..." oninput="loadUI()">
+</div>
+
+<div class="card">
+<h3>⚡ Quick Actions</h3>
+<button class="all" onclick="markAll('present')">Mark All Present</button>
+<button class="all" onclick="markAll('absent')">Mark All Absent</button>
+</div>
+
+<div class="card">
+<h3>📊 Stats</h3>
+<div id="stats"></div>
+<div class="progress"><div id="progressBar"></div></div>
+</div>
+
+<div class="card">
+<h3>📋 Students</h3>
+<div id="list"></div>
+</div>
+
+<div id="toast"></div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
 import { getDatabase, ref, onValue, push, update, remove, get } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -161,178 +231,147 @@ const app = initializeApp({
  apiKey:"AIzaSyDhYc_ieCicFMd1IQm6hMrvpUUx5G8ENUk",
  databaseURL:"https://presenty-pro-default-rtdb.firebaseio.com/"
 });
+
 const db = getDatabase(app);
 
-// 🔐 PROTECT
 if(localStorage.getItem("role")!=="teacher"){
  location="index.html";
 }
 
-// ✅ ELEMENTS (FIXED)
-const nameInput = document.getElementById("name");
-const rollInput = document.getElementById("roll");
-const searchInput = document.getElementById("search");
-const list = document.getElementById("list");
-const stats = document.getElementById("stats");
-const progressBar = document.getElementById("progressBar");
-const dateText = document.getElementById("dateText");
+const nameInput=document.getElementById("name");
+const rollInput=document.getElementById("roll");
+const searchInput=document.getElementById("search");
+const list=document.getElementById("list");
+const stats=document.getElementById("stats");
+const progressBar=document.getElementById("progressBar");
+const dateText=document.getElementById("dateText");
 
-// LOGOUT
-window.logout=()=>{
- localStorage.clear();
- location="index.html";
-}
-
-// 📅 DATE
 let currentDate=new Date();
 
-function formatDate(d){
- return d.toISOString().split("T")[0];
-}
+function formatDate(d){return d.toISOString().split("T")[0];}
 
 function showDate(){
- dateText.innerText=currentDate.toDateString();
+dateText.innerText=currentDate.toDateString();
 }
 
 window.changeDate=(n)=>{
- currentDate.setDate(currentDate.getDate()+n);
- loadAttendance();
+currentDate.setDate(currentDate.getDate()+n);
+loadAttendance();
 }
 
-// 🔔 TOAST
 function toast(msg){
- let t=document.getElementById("toast");
- t.innerText=msg;
- t.style.display="block";
- setTimeout(()=>t.style.display="none",2000);
+let t=document.getElementById("toast");
+t.innerText=msg;
+t.style.display="block";
+setTimeout(()=>t.style.display="none",2000);
 }
 
-// ➕ ADD STUDENT
+// LOGOUT FIX
+window.logout = () => {
+ localStorage.removeItem("role");
+ localStorage.removeItem("userId");
+ location.href = "index.html";
+};
+
 window.addStudent=()=>{
- let name=nameInput.value.trim();
- let roll=rollInput.value.trim();
+let name=nameInput.value.trim();
+let roll=rollInput.value.trim();
 
- if(!name||!roll){
-   alert("Fill all fields");
-   return;
- }
+if(!name||!roll) return alert("Fill all");
 
- push(ref(db,"students"),{name,roll});
- toast("Student added");
+push(ref(db,"students"),{name,roll});
+toast("Added");
 
- nameInput.value="";
- rollInput.value="";
+nameInput.value="";
+rollInput.value="";
 }
 
-// 📡 DATA
-let studentsData={}, attendanceData={};
+let studentsData={},attendanceData={};
 
-// LIVE STUDENTS
 onValue(ref(db,"students"),snap=>{
- studentsData=snap.val()||{};
- loadAttendance();
+studentsData=snap.val()||{};
+loadAttendance();
 });
 
-// LOAD ATTENDANCE
 async function loadAttendance(){
- showDate();
-
- let snap=await get(ref(db,"attendance/"+formatDate(currentDate)));
- attendanceData=snap.val()||{};
-
- loadUI();
+showDate();
+let snap=await get(ref(db,"attendance/"+formatDate(currentDate)));
+attendanceData=snap.val()||{};
+loadUI();
 }
 
-// 🎨 UI
 window.loadUI=()=>{
 
- let search=searchInput.value.toLowerCase();
+let search=searchInput.value.toLowerCase();
 
- let html="";
- let present=0,absent=0,total=0;
+let html="";
+let present=0,absent=0,total=0;
 
- for(let id in studentsData){
+for(let id in studentsData){
 
-  let s=studentsData[id];
+let s=studentsData[id];
+if(!s.name.toLowerCase().includes(search)) continue;
 
-  if(!s.name.toLowerCase().includes(search)) continue;
+total++;
 
-  total++;
+let status=attendanceData[id];
 
-  let status=attendanceData[id];
+if(status==="present") present++;
+else if(status==="absent") absent++;
 
-  if(status==="present") present++;
-  else if(status==="absent") absent++;
+html+=`
+<div class="student">
+<span>${s.name} (${s.roll})</span>
 
-  html+=`
-  <div class="student">
-    <span>${s.name} (${s.roll})</span>
-
-    ${
-      status
-      ? `<b>${status==="present"?"✅":"❌"}</b>`
-      :
-      `<div>
-        <button class="present" onclick="mark('${id}','present')">✔</button>
-        <button class="absent" onclick="mark('${id}','absent')">✖</button>
-      </div>`
-    }
-
-    <div>
-      <button class="edit" onclick="editStudent('${id}','${s.name}')">✏️</button>
-      <button class="delete" onclick="deleteStudent('${id}')">🗑️</button>
-    </div>
-  </div>`;
- }
-
- list.innerHTML = html || "<p>No students found</p>";
-
- let percent = total ? Math.round((present/total)*100) : 0;
-
- stats.innerHTML = `
-   ${percent}% Attendance<br>
-   <small>✅ ${present} | ❌ ${absent} | Total ${total}</small>
- `;
-
- progressBar.style.width = percent + "%";
+${
+status
+? `<b>${status==="present"?"✅":"❌"}</b>`
+:
+`<div>
+<button class="present" onclick="mark('${id}','present')">✔</button>
+<button class="absent" onclick="mark('${id}','absent')">✖</button>
+</div>`
 }
 
-// ✅ MARK
+<div>
+<button class="edit" onclick="editStudent('${id}','${s.name}')">✏️</button>
+<button class="delete" onclick="deleteStudent('${id}')">🗑️</button>
+</div>
+</div>`;
+}
+
+list.innerHTML=html;
+
+let percent=total?Math.round((present/total)*100):0;
+
+stats.innerHTML=`${percent}% Attendance (${present}/${total})`;
+
+progressBar.style.width=percent+"%";
+}
+
 window.mark=(id,status)=>{
- update(ref(db,"attendance/"+formatDate(currentDate)),{[id]:status});
- toast("Marked " + status);
- loadAttendance();
+update(ref(db,"attendance/"+formatDate(currentDate)),{[id]:status});
+loadAttendance();
 }
 
-// ⚡ MARK ALL
 window.markAll=(status)=>{
- let updates={};
-
- for(let id in studentsData){
-   updates[id]=status;
- }
-
- update(ref(db,"attendance/"+formatDate(currentDate)),updates);
- toast("All marked " + status);
- loadAttendance();
+let updates={};
+for(let id in studentsData) updates[id]=status;
+update(ref(db,"attendance/"+formatDate(currentDate)),updates);
+loadAttendance();
 }
 
-// 🗑 DELETE
 window.deleteStudent=(id)=>{
- if(confirm("Delete student?")){
-   remove(ref(db,"students/"+id));
-   toast("Deleted");
- }
+if(confirm("Delete?")) remove(ref(db,"students/"+id));
 }
 
-// ✏ EDIT
 window.editStudent=(id,name)=>{
- let newName=prompt("Edit name:",name);
-
- if(newName){
-   update(ref(db,"students/"+id),{name:newName});
-   toast("Updated");
- }
+let n=prompt("Edit name:",name);
+if(n) update(ref(db,"students/"+id),{name:n});
 }
-</script> </body>  
-</html>  
+
+loadAttendance();
+</script>
+
+</body>
+</html>
