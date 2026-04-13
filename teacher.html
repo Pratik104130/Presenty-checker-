@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Teacher PRO SKY</title>
+<title>Teacher Dashboard</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -111,13 +111,14 @@ transform:scale(1.05);
 }
 
 /* COLORS */
-.add{background:#38bdf8;color:#000;}
+.add{background:#FF5D5D;color:#000;}
 .present{background:#22c55e;color:#000;}
 .absent{background:#ef4444;color:white;}
-.edit{background:#60a5fa;color:#000;}
+.edit{background:#C478FF;color:#000;}
 .delete{background:#fb7185;color:#000;}
-.all{background:#0ea5e9;color:#000;}
-
+.all{background:#FF4242;color:#000;}
+.allp{background:#00ff00;}
+.dateBtn{background:#CA9AFF;color:#000}
 /* STUDENT */
 .student{
 display:flex;
@@ -134,6 +135,7 @@ transition:0.3s;
 .student:hover{
 background:rgba(56,189,248,0.08);
 }
+
 
 /* STATS */
 #stats{
@@ -191,7 +193,6 @@ gap:8px;
 <div class="dateBtn" id="dateText"></div>
 <div class="dateBtn" onclick="changeDate(1)">➡️</div>
 </div>
-
 <div class="card">
 <h3>➕ Add Student</h3>
 <input id="name" placeholder="Name">
@@ -206,7 +207,7 @@ gap:8px;
 
 <div class="card">
 <h3>⚡ Quick Actions</h3>
-<button class="all" onclick="markAll('present')">Mark All Present</button>
+<button class="allp" onclick="markAll('present')">Mark All Present</button>
 <button class="all" onclick="markAll('absent')">Mark All Absent</button>
 </div>
 
@@ -334,8 +335,8 @@ status
 }
 
 <div>
-<button class="edit" onclick="editStudent('${id}','${s.name}')">✏️</button>
-<button class="delete" onclick="deleteStudent('${id}')">🗑️</button>
+<button class="edit" onclick="editStudent('${id}','${s.name}')">Edit Name</button>
+<button class="delete" onclick="deleteStudent('${id}')">Delete</button>
 </div>
 </div>`;
 }
